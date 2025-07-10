@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glimz - سيرفر ألعاب Discord الفاخر</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary: #5865F2;
+            --primary-dark: #4752C4;
+            --secondary: #EB459E;
+            --dark: #23272A;
+            --darker: #1e2124;
+            --light: #FFFFFF;
+            --gray: #99AAB5;
+            --success: #57F287;
+            --warning: #FEE75C;
+            --danger: #ED4245;
+            --discord-blurple: #5865F2;
+            --discord-green: #57F287;
+            --discord-yellow: #FEE75C;
+            --discord-red: #ED4245;
+            --discord-dark: #23272A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(88, 101, 242, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(235, 69, 158, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary), var(--secondary));
+            border-radius: 10px;
+            border: 2px solid var(--darker);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--secondary), var(--primary));
+        }
+
+        /* التنقل */
+        .floating-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(35, 39, 42, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 20px 12px;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-dot.active {
+            background: var(--primary);
+            transform: scale(1.4);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .nav-dot::after {
+            content: attr(data-section);
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-dot:hover::after {
+            opacity: 1;
+            right: 35px;
+        }
+
+        /* زر القائمة للجوال */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(88, 101, 242, 0.5);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        /* الهيدر */
+        header {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            padding: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.discordapp.com/icons/1376449723556298753/fbd716a8edd83a89ef4117ed49e09746.png?size=1024') center/cover no-repeat;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(transparent, var(--dark));
+            z-index: 1;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .server-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            position: relative;
+            z-index: 2;
+            flex-wrap: wrap;
+        }
+
+        .server-logo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 8px solid var(--primary);
+            box-shadow: 0 0 50px rgba(88, 101, 242, 0.7);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 50px rgba(88, 101, 242, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 80px rgba(88, 101, 242, 1);
+            }
+        }
+
+        .server-logo:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 0 70px rgba(88, 101, 242, 0.9);
+        }
+
+        .server-info {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .server-info h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+            position: relative;
+            display: inline-block;
+        }
+
+        .server-info h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+
+        .server-description {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .member-counter {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-weight: bold;
+            border: 2px solid var(--primary);
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .member-counter:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .join-button {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.5);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .join-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .join-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.7);
+        }
+
+        .join-button:hover::before {
+            opacity: 1;
+        }
+
+        .join-button:active {
+            transform: translateY(0);
+        }
+
+        /* الأقسام */
+        .section {
+            min-height: 100vh;
+            padding: 100px 30px;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 60px;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 4px;
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin: 40px 0 25px;
+            color: var(--primary);
+            position: relative;
+            padding-right: 20px;
+        }
+
+        h3::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        /* الصفحة الرئيسية */
+        .intro {
+            background: rgba(30, 33, 36, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            filter: blur(30px);
+            opacity: 0.3;
+        }
+
+        .rules {
+            list-style-type: none;
+            margin: 30px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .rules li {
+            padding: 15px 0 15px 40px;
+            position: relative;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .rules li:hover {
+            transform: translateX(10px);
+        }
+
+        .rules li::before {
+            content: "•";
+            color: var(--primary);
+            font-size: 2rem;
+            position: absolute;
+            left: 0;
+            top: 5px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .game-card {
+            background: rgba(88, 101, 242, 0.1);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .game-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(88, 101, 242, 0.1));
+            z-index: -1;
+        }
+
+        .game-card:hover {
+            background: rgba(88, 101, 242, 0.2);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.3);
+            border-color: var(--primary);
+        }
+
+        .game-card i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .game-card:hover i {
+            transform: scale(1.2);
+        }
+
+        .game-card span {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 35px;
+            margin: 40px 0;
+        }
+
+        .team-card {
+            background: rgba(30, 33, 36, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .team-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+        }
+
+        .team-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .team-card:hover img {
+            transform: rotate(10deg) scale(1.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .team-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .team-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* قسم الحسابات */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+
+        .social-card {
+            background: rgba(30, 33, 36, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--light);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 200px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .social-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .social-card i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .social-card:hover i {
+            transform: scale(1.2);
+        }
+
+        .social-card span {
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .social-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .screenshot-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .screenshot-container:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .screenshot-container:hover img {
+            transform: scale(1.1);
+        }
+
+        .screenshot-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-container:hover .screenshot-overlay {
+            opacity: 1;
+        }
+
+        /* قسم الإنجازات */
+        .achievements-list {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .achievement {
+            background: rgba(30, 33, 36, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-left: 5px solid var(--gray);
+            transition: all 0.5s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(88, 101, 242, 0.05));
+            z-index: -1;
+        }
+
+        .achievement:hover {
+            transform: translateX(15px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .achievement.achieved {
+            border-left-color: var(--success);
+        }
+
+        .achievement.achieved::before {
+            background: linear-gradient(45deg, transparent, rgba(87, 242, 135, 0.05));
+        }
+
+        .achievement i {
+            font-size: 2rem;
+            min-width: 50px;
+            height: 50px;
+            background: rgba(87, 242, 135, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success);
+            transition: all 0.3s ease;
+        }
+
+        .achievement:hover i {
+            transform: rotate(15deg) scale(1.2);
+        }
+
+        .achievement span {
+            font-size: 1.2rem;
+            flex: 1;
+        }
+
+        /* قسم المميزات */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 35px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(30, 33, 36, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            position: relative;
+            padding-right: 15px;
+        }
+
+        .feature-card h4::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        /* قسم الانضمام */
+        .join-steps {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step {
+            background: rgba(30, 33, 36, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .step::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(88, 101, 242, 0.05));
+            z-index: -1;
+        }
+
+        .step:hover {
+            transform: translateX(15px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .step-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            min-width: 70px;
+            height: 70px;
+            background: rgba(88, 101, 242, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-number {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+        }
+
+        .step-content h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .step-content p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .step-content a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .step-content a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        /* لوحة التحكم */
+        .hidden {
+            display: none;
+        }
+
+        .admin-panel {
+            background: rgba(30, 33, 36, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-panel::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .admin-section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        input, textarea, select {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px 20px;
+            color: white;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(88, 101, 242, 0.3);
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        button[type="submit"], #add-section {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            align-self: flex-start;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button[type="submit"]:hover, #add-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .admin-controls button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* الفوتر */
+        footer {
+            background: var(--darker);
+            padding: 50px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--primary), transparent);
+        }
+
+        footer p {
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        footer .copyright {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* تأثيرات الحركة */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(88, 101, 242, 0.8);
+            }
+        }
+
+        .glow-text {
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .server-header {
+                gap: 40px;
+            }
+            
+            .server-logo {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .server-info h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .floating-nav {
+                right: 15px;
+                padding: 15px 10px;
+                gap: 12px;
+            }
+            
+            .nav-dot {
+                width: 12px;
+                height: 12px;
+            }
+            
+            .nav-dot.active {
+                transform: scale(1.3);
+            }
+            
+            h2 {
+                font-size: 2.5rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 20px;
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 25px;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .floating-nav {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: flex;
+            }
+            
+            .server-header {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            
+            .server-info h1 {
+                font-size: 3rem;
+            }
+            
+            .server-description {
+                font-size: 1.1rem;
+            }
+            
+            h2 {
+                font-size: 2.2rem;
+                margin-bottom: 40px;
+            }
+            
+            .intro {
+                padding: 25px;
+            }
+            
+            .rules {
+                grid-template-columns: 1fr;
+            }
+            
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            .social-links {
+                gap: 20px;
+            }
+            
+            .social-card {
+                min-width: 160px;
+                padding: 20px;
+            }
+            
+            .screenshots {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .step {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .step-number {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+            
+            .admin-panel {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section {
+                padding: 80px 20px;
+            }
+            
+            .server-info h1 {
+                font-size: 2.5rem;
+            }
+            
+            .member-counter {
+                font-size: 1rem;
+                padding: 10px 20px;
+            }
+            
+            .join-button {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            h3 {
+                font-size: 1.5rem;
+            }
+            
+            .game-card {
+                padding: 20px;
+            }
+            
+            .game-card i {
+                font-size: 2.5rem;
+            }
+            
+            .team-card {
+                padding: 20px;
+            }
+            
+            .team-card img {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .social-card {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- جسيمات الخلفية -->
+    <div class="particles" id="particles-js"></div>
+
+    <!-- زر القائمة للجوال -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- شريط التنقل العائم -->
+    <div class="floating-nav" id="floatingNav">
+        <div class="nav-dot active" data-section="الرئيسية" onclick="scrollToSection('home')"></div>
+        <div class="nav-dot" data-section="الحسابات" onclick="scrollToSection('social')"></div>
+        <div class="nav-dot" data-section="الإنجازات" onclick="scrollToSection('achievements')"></div>
+        <div class="nav-dot" data-section="المميزات" onclick="scrollToSection('features')"></div>
+        <div class="nav-dot" data-section="الانضمام" onclick="scrollToSection('join')"></div>
+    </div>
+
+    <!-- الهيدر -->
+    <header>
+        <div class="server-header">
+            <img src="https://cdn.discordapp.com/icons/1376449723556298753/fbd716a8edd83a89ef4117ed49e09746.png?size=1024" alt="Glimz Logo" class="server-logo floating">
+            <div class="server-info">
+                <h1 class="glow-text">Glimz</h1>
+                <p class="server-description">سيرفر الألعاب الأكثر تميزاً وتفاعلاً في عالم Discord، حيث تجتمع المتعة والتنافس في مكان واحد</p>
+                <div class="member-counter">
+                    <span id="member-count">250+</span> عضو
+                </div>
+                <a href="https://discord.gg/CeBHSTEKGd" class="join-button animate__animated animate__pulse animate__infinite animate__slower">انضم إلينا</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- الأقسام الرئيسية -->
+    <main>
+        <!-- الصفحة الرئيسية -->
+        <section id="home" class="section">
+            <div class="container">
+                <h2 class="animate__animated animate__fadeIn">مرحباً بكم في Glimz</h2>
+                <div class="intro animate__animated animate__fadeInUp">
+                    <h3>تعريف السيرفر</h3>
+                    <p>Glimz هو سيرفر Discord مخصص للألعاب والترفيه، حيث يمكنك اللعب مع الأصدقاء، المشاركة في الفعاليات، والاستمتاع بمجتمع نشط. نحن نقدم بيئة آمنة وممتعة للجميع مع إدارة محترفة ومراقبة على مدار الساعة.</p>
+                    
+                    <h3>قوانين السيرفر</h3>
+                    <ul class="rules">
+                        <li>احترام جميع الأعضاء والابتعاد عن أي شكل من أشكال التمييز</li>
+                        <li>عدم نشر محتوى غير لائق أو مسيء بأي شكل من الأشكال</li>
+                        <li>الالتزام بتعليمات الإدارة والمراقبين وعدم تجاوز الصلاحيات</li>
+                        <li>الحفاظ على جو السيرفر الترفيهي والهادف للجميع</li>
+                        <li>عدم إساءة استخدام القنوات الصوتية أو النصية</li>
+                        <li>احترام خصوصية الأعضاء وعدم نشر معلومات شخصية</li>
+                    </ul>
+                    
+                    <h3>الألعاب المتاحة</h3>
+                    <div class="games-grid">
+                        <div class="game-card">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>كود موبايل</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-cube"></i>
+                            <span>ماين كرافت</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-chess"></i>
+                            <span>شطرنج</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-gamepad"></i>
+                            <span>كونتر سترايك</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-car"></i>
+                            <span>GTA Online</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-user-secret"></i>
+                            <span>Hide Online</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-swords"></i>
+                            <span>Brawhalla</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-globe"></i>
+                            <span>Gratic.io</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-dice"></i>
+                            <span>ألعاب الطاولة</span>
+                        </div>
+                        <div class="game-card">
+                            <i class="fas fa-plus"></i>
+                            <span>والمزيد...</span>
+                        </div>
+                    </div>
+                    
+                    <h3>فريق المؤسسين</h3>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <img src="https://cdn.discordapp.com/avatars/770924649239674891/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="كرمو أونر شيب">
+                            <h4>كرمو أونر شيب</h4>
+                            <p>ID: 770924649239674891</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://cdn.discordapp.com/avatars/1373355566344179782/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="المؤسس جيفري">
+                            <h4>المؤسس جيفري</h4>
+                            <p>ID: 1373355566344179782</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://cdn.discordapp.com/avatars/1332179659185590303/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="جعفر مساعد">
+                            <h4>جعفر مساعد أونر شيب</h4>
+                            <p>ID: 1332179659185590303</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://cdn.discordapp.com/avatars/1302985156373647554/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="جودي">
+                            <h4>جودي مسؤولة نشر</h4>
+                            <p>ID: 1302985156373647554</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://cdn.discordapp.com/avatars/1391181393232658452/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="محمد">
+                            <h4>محمد مسؤول تنظيم</h4>
+                            <p>ID: 1391181393232658452</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://cdn.discordapp.com/avatars/1085901046842400818/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="زانا">
+                            <h4>زانا ممول السيرفر</h4>
+                            <p>ID: 1085901046842400818</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://cdn.discordapp.com/avatars/881223748353679411/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="عزيز">
+                            <h4>عزيز مساعد مسؤول</h4>
+                            <p>ID: 881223748353679411</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الحسابات -->
+        <section id="social" class="section">
+            <div class="container">
+                <h2 class="animate__animated animate__fadeIn">حسابات السيرفر</h2>
+                <div class="social-links animate__animated animate__fadeInUp">
+                    <a href="https://www.tiktok.com/@glimz_1?_t=ZS-8xuPn5Oegnl&_r=1" class="social-card" target="_blank">
+                        <i class="fab fa-tiktok"></i>
+                        <span>TikTok</span>
+                        <p>@glimz_1</p>
+                    </a>
+                    <a href="https://karmo-acc.netlify.app/" class="social-card" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>موقع كرمو</span>
+                        <p>الحسابات الرسمية</p>
+                    </a>
+                    <a href="https://guns.lol/5_fi" class="social-card" target="_blank">
+                        <i class="fas fa-globe"></i>
+                        <span>موقع جعفر</span>
+                        <p>الحسابات الرسمية</p>
+                    </a>
+                    <a href="#" class="social-card" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                        <p>قريباً</p>
+                    </a>
+                    <a href="#" class="social-card" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                        <p>قريباً</p>
+                    </a>
+                </div>
+                
+                <h3 class="animate__animated animate__fadeIn">لقطات من السيرفر</h3>
+                <div class="screenshots animate__animated animate__fadeInUp">
+                    <div class="screenshot-container">
+                        <img src="https://via.placeholder.com/800x450/7289DA/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
+                        <div class="screenshot-overlay">
+                            <h4>قناة الترحيب</h4>
+                            <p>ترحيب بالأعضاء الجدد</p>
+                        </div>
+                    </div>
+                    <div class="screenshot-container">
+                        <img src="https://via.placeholder.com/800x450/EB459E/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
+                        <div class="screenshot-overlay">
+                            <h4>قناة الألعاب</h4>
+                            <p>مناقشة الألعاب المختلفة</p>
+                        </div>
+                    </div>
+                    <div class="screenshot-container">
+                        <img src="https://via.placeholder.com/800x450/23272A/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
+                        <div class="screenshot-overlay">
+                            <h4>قناة الفعاليات</h4>
+                            <p>فعاليات السيرفر الأسبوعية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الإنجازات -->
+        <section id="achievements" class="section">
+            <div class="container">
+                <h2 class="animate__animated animate__fadeIn">إنجازات السيرفر</h2>
+                <div class="achievements-list animate__animated animate__fadeInUp">
+                    <div class="achievement achieved">
+                        <i class="fas fa-check-circle"></i>
+                        <span>وصول عدد أعضاء إلى 100 (تم تحقيقه)</span>
+                    </div>
+                    <div class="achievement achieved">
+                        <i class="fas fa-check-circle"></i>
+                        <span>وصول عدد أعضاء إلى 250 (تم تحقيقه)</span>
+                    </div>
+                    <div class="achievement achieved">
+                        <i class="fas fa-check-circle"></i>
+                        <span>كل أوقات تفاعل (تم تحقيقه)</span>
+                    </div>
+                    <div class="achievement achieved">
+                        <i class="fas fa-check-circle"></i>
+                        <span>20+ لعبة مشهورة داخل سيرفر (تم تحقيقه)</span>
+                    </div>
+                    <div class="achievement achieved">
+                        <i class="fas fa-check-circle"></i>
+                        <span>5 فعاليات أسبوعية (تم تحقيقه)</span>
+                    </div>
+                    <div class="achievement">
+                        <i class="fas fa-trophy"></i>
+                        <span>وصول عدد أعضاء إلى 500 (قيد التقدم)</span>
+                    </div>
+                    <div class="achievement">
+                        <i class="fas fa-trophy"></i>
+                        <span>إطلاق تطبيق جوال للسيرفر (قيد التطوير)</span>
+                    </div>
+                    <div class="achievement">
+                        <i class="fas fa-trophy"></i>
+                        <span>شراكات مع سيرفرات أخرى (قيد التخطيط)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المميزات -->
+        <section id="features" class="section">
+            <div class="container">
+                <h2 class="animate__animated animate__fadeIn">مميزات سيرفر Glimz</h2>
+                <div class="features-grid animate__animated animate__fadeInUp">
+                    <div class="feature-card">
+                        <h4>روم صوتي خاص</h4>
+                        <p>انشاء روم صوتي خاص بك مجانا للعب مع اصدقاء بحرية تام بداخل روم صوتي مخصص لك ولأصدقائك فقط مع إمكانية التحكم الكامل في الصلاحيات</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>اقتراحات التطوير</h4>
+                        <p>تقديم اقتراحات التي تطور سيرفر و كل اقتراحات تنقبل وتناقش بجدية من قبل الإدارة مع إمكانية تنفيذ الأفكار المميزة</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>إدارة متفاعلة</h4>
+                        <p>ادارة 24/7 متفاعلة و موجودة ساعيا تحقيق ابتسامتك و حمايتك داخل مجتمعنا مع رد سريع على جميع الاستفسارات والشكاوى</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>تطوير مستمر</h4>
+                        <p>سيرفر متطور من حيث بوتات و مواقعه ويب و فريق مبرمجين ذو خبرة عالية يعملون باستمرار على تحسين تجربة المستخدم</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>منافسات وأحداث</h4>
+                        <p>منافسة و تسلية بين لاعبين مع جوائز وحوافز للفائزين في مختلف الألعاب مع سجل إنجازات للأعضاء المتميزين</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>ألعاب متنوعة</h4>
+                        <p>يوجد العاب داخل روم صوتي مفتوحة للكل مثل الرسم، شطرنج، والمزيد من الألعاب التفاعلية التي يمكن لعبها مباشرة في الدردشة</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>دعم فني متكامل</h4>
+                        <p>فريق دعم فني متخصص لحل جميع المشكلات التقنية التي قد تواجهها في السيرفر أو في الألعاب المشتركة</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>فعاليات أسبوعية</h4>
+                        <p>فعاليات ومنافسات أسبوعية مع جوائز قيمة للفائزين في مختلف الألعاب والمجالات</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>بيئة آمنة</h4>
+                        <p>نظام حماية متكامل ضد التمييز والمضايقات مع سياسة صارمة لضمان بيئة آمنة ومريحة للجميع</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الانضمام -->
+        <section id="join" class="section">
+            <div class="container">
+                <h2 class="animate__animated animate__fadeIn">كيفية الانضمام إلى السيرفر</h2>
+                <div class="join-steps animate__animated animate__fadeInUp">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>اضغط على زر الانضمام</h4>
+                            <p>استخدم زر "انضم إلينا" في أعلى الصفحة أو <a href="https://discord.gg/CeBHSTEKGd">هذا الرابط</a> للانتقال مباشرة إلى سيرفر Discord</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>اقرأ القوانين</h4>
+                            <p>تأكد من قراءة قوانين السيرفر والالتزام بها لضمان تجربة ممتعة للجميع في القناة المخصصة للقوانين</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>اختر رتبتك</h4>
+                            <p>اختر الرتبة المناسبة لك من قسم الرتب حسب اهتماماتك والألعاب التي تفضلها للحصول على صلاحيات مناسبة</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>ابدأ اللعب</h4>
+                            <p>استكشف القنوات وابدأ اللعب مع الأعضاء الآخرين، يمكنك طلب المساعدة من الإدارة في أي وقت</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>شارك مع الأصدقاء</h4>
+                            <p>ادعُ أصدقاءك للانضمام إلى السيرفر والمشاركة في الفعاليات والمنافسات المختلفة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- لوحة التحكم (مخفية) -->
+        <section id="admin" class="section hidden">
+            <div class="container">
+                <h2>لوحة التحكم</h2>
+                <div class="admin-panel">
+                    <div class="admin-section">
+                        <h3>تعديل المعلومات الأساسية</h3>
+                        <form id="server-info-form">
+                            <label for="server-name">اسم السيرفر:</label>
+                            <input type="text" id="server-name" name="server-name" value="Glimz">
+                            
+                            <label for="server-description">وصف السيرفر:</label>
+                            <textarea id="server-description" name="server-description">Glimz هو سيرفر Discord مخصص للألعاب والترفيه، حيث يمكنك اللعب مع الأصدقاء، المشاركة في الفعاليات، والاستمتاع بمجتمع نشط. نحن نقدم بيئة آمنة وممتعة للجميع مع إدارة محترفة ومراقبة على مدار الساعة.</textarea>
+                            
+                            <label for="server-rules">قوانين السيرفر (سطر لكل قانون):</label>
+                            <textarea id="server-rules" name="server-rules">احترام جميع الأعضاء والابتعاد عن أي شكل من أشكال التمييز
+عدم نشر محتوى غير لائق أو مسيء
+الالتزام بتعليمات الإدارة والمراقبين
+عدم إساءة استخدام الصلاحيات أو استغلال الثغرات
+الحفاظ على جو السيرفر الترفيهي والهادف</textarea>
+                            
+                            <label for="server-invite">رابط الدعوة:</label>
+                            <input type="text" id="server-invite" name="server-invite" value="https://discord.gg/CeBHSTEKGd">
+                            
+                            <button type="submit">حفظ التغييرات</button>
+                        </form>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h3>إدارة الأقسام</h3>
+                        <button id="add-section">إضافة قسم جديد</button>
+                        <div class="sections-list" style="margin-top: 20px;">
+                            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                                <h4 style="margin-bottom: 15px;">الصفحة الرئيسية</h4>
+                                <div class="admin-controls">
+                                    <button class="edit-btn">تعديل</button>
+                                    <button class="delete-btn">حذف</button>
+                                </div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                                <h4 style="margin-bottom: 15px;">حسابات السيرفر</h4>
+                                <div class="admin-controls">
+                                    <button class="edit-btn">تعديل</button>
+                                    <button class="delete-btn">حذف</button>
+                                </div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                                <h4 style="margin-bottom: 15px;">إنجازات السيرفر</h4>
+                                <div class="admin-controls">
+                                    <button class="edit-btn">تعديل</button>
+                                    <button class="delete-btn">حذف</button>
+                                </div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                                <h4 style="margin-bottom: 15px;">مميزات السيرفر</h4>
+                                <div class="admin-controls">
+                                    <button class="edit-btn">تعديل</button>
+                                    <button class="delete-btn">حذف</button>
+                                </div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px;">
+                                <h4 style="margin-bottom: 15px;">كيفية الانضمام</h4>
+                                <div class="admin-controls">
+                                    <button class="edit-btn">تعديل</button>
+                                    <button class="delete-btn">حذف</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h3>تعديل الإنجازات</h3>
+                        <form id="achievements-form">
+                            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                                <input type="text" placeholder="إنجاز جديد" style="flex: 1;">
+                                <select style="flex: 0 0 150px;">
+                                    <option value="achieved">تم تحقيقه</option>
+                                    <option value="in-progress">قيد التقدم</option>
+                                </select>
+                                <button type="button" style="background: var(--success);">إضافة</button>
+                            </div>
+                            
+                            <label>الإنجازات الحالية:</label>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <input type="checkbox" checked style="transform: scale(1.5);">
+                                    <input type="text" value="وصول عدد أعضاء إلى 100 (تم تحقيقه)" style="flex: 1;">
+                                    <select style="flex: 0 0 150px;">
+                                        <option value="achieved">تم تحقيقه</option>
+                                        <option value="in-progress">قيد التقدم</option>
+                                    </select>
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <input type="checkbox" checked style="transform: scale(1.5);">
+                                    <input type="text" value="وصول عدد أعضاء إلى 250 (تم تحقيقه)" style="flex: 1;">
+                                    <select style="flex: 0 0 150px;">
+                                        <option value="achieved">تم تحقيقه</option>
+                                        <option value="in-progress">قيد التقدم</option>
+                                    </select>
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <input type="checkbox" checked style="transform: scale(1.5);">
+                                    <input type="text" value="كل أوقات تفاعل (تم تحقيقه)" style="flex: 1;">
+                                    <select style="flex: 0 0 150px;">
+                                        <option value="achieved">تم تحقيقه</option>
+                                        <option value="in-progress">قيد التقدم</option>
+                                    </select>
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <input type="checkbox" checked style="transform: scale(1.5);">
+                                    <input type="text" value="20+ لعبة مشهورة داخل سيرفر (تم تحقيقه)" style="flex: 1;">
+                                    <select style="flex: 0 0 150px;">
+                                        <option value="achieved">تم تحقيقه</option>
+                                        <option value="in-progress">قيد التقدم</option>
+                                    </select>
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <input type="checkbox" style="transform: scale(1.5);">
+                                    <input type="text" value="وصول عدد أعضاء إلى 500 (قيد التقدم)" style="flex: 1;">
+                                    <select style="flex: 0 0 150px;">
+                                        <option value="achieved">تم تحقيقه</option>
+                                        <option value="in-progress" selected>قيد التقدم</option>
+                                    </select>
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" style="margin-top: 20px;">حفظ التغييرات</button>
+                        </form>
+                    </div>
+
+                    <div class="admin-section">
+                        <h3>إدارة الألعاب</h3>
+                        <form id="games-form">
+                            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                                <input type="text" placeholder="اسم اللعبة" style="flex: 1;">
+                                <input type="text" placeholder="أيقونة (Font Awesome)" style="flex: 0 0 200px;">
+                                <button type="button" style="background: var(--success);">إضافة</button>
+                            </div>
+                            
+                            <label>الألعاب الحالية:</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-top: 15px;">
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-mobile-alt" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="كود موبايل" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-cube" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="ماين كرافت" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-chess" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="شطرنج" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-gamepad" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="كونتر سترايك" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-car" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="GTA Online" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-user-secret" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="Hide Online" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-swords" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="Brawhalla" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-globe" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="Gratic.io" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-dice" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="ألعاب الطاولة" style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                                    <i class="fas fa-plus" style="font-size: 1.5rem; color: var(--primary);"></i>
+                                    <input type="text" value="والمزيد..." style="flex: 1; background: transparent; border: none;">
+                                    <button type="button" class="delete-btn">حذف</button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" style="margin-top: 20px;">حفظ التغييرات</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- الفوتر -->
+    <footer>
+        <div class="container">
+            <p>سيرفر Glimz - مجتمع الألعاب الأفضل على Discord</p>
+            <p>تواصل معنا عبر: <a href="https://discord.gg/CeBHSTEKGd" style="color: var(--primary);">رابط السيرفر</a></p>
+            <p class="copyright">© 2023 Glimz Discord Server. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // جسيمات الخلفية
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#5865F2"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#5865F2",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // تنشيط نقاط التنقل
+        const sections = document.querySelectorAll('.section');
+        const navDots = document.querySelectorAll('.nav-dot');
+        const floatingNav = document.getElementById('floatingNav');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+        function updateActiveDot() {
+            let index = sections.length;
+            
+            while(--index && window.scrollY + 100 < sections[index].offsetTop) {}
+            
+            navDots.forEach((dot) => dot.classList.remove('active'));
+            navDots[index].classList.add('active');
+        }
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            window.scrollTo({
+                top: section.offsetTop,
+                behavior: 'smooth'
+            });
+            
+            // إخفاء القائمة على الجوال بعد النقر
+            if (window.innerWidth <= 768) {
+                floatingNav.style.display = 'none';
+            }
+        }
+
+        // إضافة حدث التمرير
+        window.addEventListener('scroll', updateActiveDot);
+
+        // تنشيط النقاط عند النقر
+        navDots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                navDots.forEach(d => d.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // زر القائمة للجوال
+        mobileMenuBtn.addEventListener('click', function() {
+            if (floatingNav.style.display === 'flex') {
+                floatingNav.style.display = 'none';
+            } else {
+                floatingNav.style.display = 'flex';
+            }
+        });
+
+        // تأثيرات الظهور عند التمرير
+        const animateElements = document.querySelectorAll('.animate__animated');
+        
+        function checkScroll() {
+            animateElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    const animationType = element.classList.contains('animate__fadeIn') ? 'animate__fadeIn' : 'animate__fadeInUp';
+                    element.style.opacity = '1';
+                    element.classList.add(animationType);
+                }
+            });
+        }
+
+        // محاكاة جلب عدد الأعضاء
+        function updateMemberCount() {
+            const memberCount = document.getElementById('member-count');
+            let count = 250;
+            
+            // تأثير زيادة العداد
+            const interval = setInterval(() => {
+                count += Math.floor(Math.random() * 3);
+                memberCount.textContent = count + '+';
+                
+                if(count >= 300) {
+                    clearInterval(interval);
+                    memberCount.textContent = '300+';
+                }
+            }, 3000);
+        }
+
+        // تفعيل لوحة التحكم عند الحاجة
+        function checkAdminAccess() {
+            const password = prompt("الرجاء إدخال كلمة السر للإدارة:");
+            if (password === "karmo$!GLIMZ•JJKRMZ") {
+                document.getElementById('admin').classList.remove('hidden');
+                scrollToSection('admin');
+            } else if(password !== null) {
+                alert("كلمة السر غير صحيحة!");
+            }
+        }
+
+        // إضافة زر سري للوصول إلى لوحة التحكم
+        document.addEventListener('keydown', function(e) {
+            if(e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                checkAdminAccess();
+            }
+        });
+
+        // زر لوحة التحكم للجوال
+        if (window.innerWidth <= 768) {
+            const adminBtn = document.createElement('button');
+            adminBtn.innerHTML = '<i class="fas fa-cog"></i>';
+            adminBtn.style.position = 'fixed';
+            adminBtn.style.bottom = '20px';
+            adminBtn.style.left = '20px';
+            adminBtn.style.zIndex = '1100';
+            adminBtn.style.background = 'var(--primary)';
+            adminBtn.style.color = 'white';
+            adminBtn.style.width = '50px';
+            adminBtn.style.height = '50px';
+            adminBtn.style.borderRadius = '50%';
+            adminBtn.style.display = 'flex';
+            adminBtn.style.alignItems = 'center';
+            adminBtn.style.justifyContent = 'center';
+            adminBtn.style.fontSize = '1.5rem';
+            adminBtn.style.boxShadow = '0 5px 20px rgba(88, 101, 242, 0.5)';
+            adminBtn.style.border = 'none';
+            adminBtn.style.cursor = 'pointer';
+            adminBtn.style.transition = 'all 0.3s ease';
+            adminBtn.addEventListener('click', checkAdminAccess);
+            document.body.appendChild(adminBtn);
+        }
+
+        // بدء الوظائف عند تحميل الصفحة
+        window.onload = function() {
+            updateActiveDot();
+            updateMemberCount();
+            checkScroll();
+            
+            // إضافة حدث التمرير للتحقق من العناصر المراد تحريكها
+            window.addEventListener('scroll', checkScroll);
+        };
+    </script>
+</body>
+</html>
