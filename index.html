@@ -9,21 +9,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
-            --primary: #5865F2;
-            --primary-dark: #4752C4;
-            --secondary: #EB459E;
-            --dark: #23272A;
-            --darker: #1e2124;
+            --primary: #FF0000;
+            --primary-dark: #CC0000;
+            --secondary: #000000;
+            --dark: #121212;
+            --darker: #0A0A0A;
             --light: #FFFFFF;
-            --gray: #99AAB5;
-            --success: #57F287;
-            --warning: #FEE75C;
-            --danger: #ED4245;
-            --discord-blurple: #5865F2;
-            --discord-green: #57F287;
-            --discord-yellow: #FEE75C;
-            --discord-red: #ED4245;
-            --discord-dark: #23272A;
+            --gray: #AAAAAA;
+            --success: #00FF00;
+            --warning: #FFCC00;
+            --danger: #FF3333;
         }
 
         * {
@@ -38,8 +33,8 @@
             color: var(--light);
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 25% 25%, rgba(88, 101, 242, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(235, 69, 158, 0.15) 0%, transparent 50%);
+                radial-gradient(circle at 25% 25%, rgba(255, 0, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.15) 0%, transparent 50%);
             background-attachment: fixed;
         }
 
@@ -73,11 +68,11 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            background: rgba(35, 39, 42, 0.8);
+            background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(15px);
             padding: 20px 12px;
             border-radius: 50px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -137,7 +132,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            box-shadow: 0 5px 20px rgba(88, 101, 242, 0.5);
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -211,25 +206,35 @@
             border-radius: 50%;
             object-fit: cover;
             border: 8px solid var(--primary);
-            box-shadow: 0 0 50px rgba(88, 101, 242, 0.7);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.7);
             transition: all 0.5s ease;
             position: relative;
             z-index: 1;
-            animation: pulse 3s infinite;
+            animation: pulse 3s infinite, rotate 20s linear infinite;
         }
 
         @keyframes pulse {
             0%, 100% {
-                box-shadow: 0 0 50px rgba(88, 101, 242, 0.7);
+                box-shadow: 0 0 50px rgba(255, 0, 0, 0.7);
             }
             50% {
-                box-shadow: 0 0 80px rgba(88, 101, 242, 1);
+                box-shadow: 0 0 80px rgba(255, 0, 0, 1);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
             }
         }
 
         .server-logo:hover {
             transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 0 70px rgba(88, 101, 242, 0.9);
+            box-shadow: 0 0 70px rgba(255, 0, 0, 0.9);
+            animation: pulse 1.5s infinite, rotate 10s linear infinite;
         }
 
         .server-info {
@@ -243,9 +248,19 @@
             background: linear-gradient(to right, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             position: relative;
             display: inline-block;
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            from {
+                text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.6);
+            }
         }
 
         .server-info h1::after {
@@ -278,6 +293,16 @@
             backdrop-filter: blur(5px);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
+            animation: borderPulse 3s infinite;
+        }
+
+        @keyframes borderPulse {
+            0%, 100% {
+                border-color: var(--primary);
+            }
+            50% {
+                border-color: var(--secondary);
+            }
         }
 
         .member-counter:hover {
@@ -295,12 +320,24 @@
             font-weight: bold;
             font-size: 1.2rem;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.5);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.5);
             position: relative;
             overflow: hidden;
             border: none;
             cursor: pointer;
             z-index: 1;
+            animation: buttonPulse 2s infinite;
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% {
+                transform: translateY(0);
+                box-shadow: 0 10px 25px rgba(255, 0, 0, 0.5);
+            }
+            50% {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(255, 0, 0, 0.7);
+            }
         }
 
         .join-button::before {
@@ -317,8 +354,9 @@
         }
 
         .join-button:hover {
+            animation: none;
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.7);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.7);
         }
 
         .join-button:hover::before {
@@ -353,6 +391,7 @@
             background: linear-gradient(to right, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: textGlow 2s ease-in-out infinite alternate;
         }
 
         h2::after {
@@ -387,7 +426,7 @@
 
         /* الصفحة الرئيسية */
         .intro {
-            background: rgba(30, 33, 36, 0.8);
+            background: rgba(10, 10, 10, 0.8);
             padding: 40px;
             border-radius: 20px;
             backdrop-filter: blur(15px);
@@ -396,6 +435,12 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .intro:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.3);
         }
 
         .intro::before {
@@ -427,6 +472,7 @@
 
         .rules li:hover {
             transform: translateX(10px);
+            color: var(--primary);
         }
 
         .rules li::before {
@@ -446,8 +492,8 @@
         }
 
         .game-card {
-            background: rgba(88, 101, 242, 0.1);
-            border: 1px solid rgba(88, 101, 242, 0.3);
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
             border-radius: 15px;
             padding: 25px;
             text-align: center;
@@ -469,14 +515,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(88, 101, 242, 0.1));
+            background: linear-gradient(45deg, transparent, rgba(255, 0, 0, 0.1));
             z-index: -1;
         }
 
         .game-card:hover {
-            background: rgba(88, 101, 242, 0.2);
+            background: rgba(255, 0, 0, 0.2);
             transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 15px 30px rgba(88, 101, 242, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
             border-color: var(--primary);
         }
 
@@ -489,6 +535,7 @@
 
         .game-card:hover i {
             transform: scale(1.2);
+            color: var(--light);
         }
 
         .game-card span {
@@ -504,7 +551,7 @@
         }
 
         .team-card {
-            background: rgba(30, 33, 36, 0.9);
+            background: rgba(10, 10, 10, 0.9);
             border-radius: 15px;
             padding: 25px;
             text-align: center;
@@ -528,7 +575,7 @@
 
         .team-card:hover {
             transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.4);
             border-color: var(--primary);
         }
 
@@ -545,7 +592,7 @@
 
         .team-card:hover img {
             transform: rotate(10deg) scale(1.1);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
         }
 
         .team-card h4 {
@@ -569,7 +616,7 @@
         }
 
         .social-card {
-            background: rgba(30, 33, 36, 0.9);
+            background: rgba(10, 10, 10, 0.9);
             border-radius: 15px;
             padding: 30px;
             text-align: center;
@@ -596,7 +643,7 @@
 
         .social-card:hover {
             transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.4);
         }
 
         .social-card i {
@@ -608,6 +655,7 @@
 
         .social-card:hover i {
             transform: scale(1.2);
+            color: var(--primary);
         }
 
         .social-card span {
@@ -639,7 +687,7 @@
 
         .screenshot-container:hover {
             transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.5);
         }
 
         .screenshot-container img {
@@ -676,7 +724,7 @@
         }
 
         .achievement {
-            background: rgba(30, 33, 36, 0.9);
+            background: rgba(10, 10, 10, 0.9);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 20px;
@@ -698,13 +746,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(88, 101, 242, 0.05));
+            background: linear-gradient(45deg, transparent, rgba(255, 0, 0, 0.05));
             z-index: -1;
         }
 
         .achievement:hover {
             transform: translateX(15px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
         }
 
         .achievement.achieved {
@@ -712,14 +760,14 @@
         }
 
         .achievement.achieved::before {
-            background: linear-gradient(45deg, transparent, rgba(87, 242, 135, 0.05));
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.05));
         }
 
         .achievement i {
             font-size: 2rem;
             min-width: 50px;
             height: 50px;
-            background: rgba(87, 242, 135, 0.1);
+            background: rgba(0, 255, 0, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -746,7 +794,7 @@
         }
 
         .feature-card {
-            background: rgba(30, 33, 36, 0.9);
+            background: rgba(10, 10, 10, 0.9);
             border-radius: 15px;
             padding: 30px;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -769,7 +817,7 @@
 
         .feature-card:hover {
             transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.4);
         }
 
         .feature-card h4 {
@@ -803,7 +851,7 @@
         }
 
         .step {
-            background: rgba(30, 33, 36, 0.9);
+            background: rgba(10, 10, 10, 0.9);
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 25px;
@@ -825,13 +873,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(88, 101, 242, 0.05));
+            background: linear-gradient(45deg, transparent, rgba(255, 0, 0, 0.05));
             z-index: -1;
         }
 
         .step:hover {
             transform: translateX(15px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
         }
 
         .step-number {
@@ -840,7 +888,7 @@
             color: var(--primary);
             min-width: 70px;
             height: 70px;
-            background: rgba(88, 101, 242, 0.1);
+            background: rgba(255, 0, 0, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -851,7 +899,7 @@
 
         .step:hover .step-number {
             transform: scale(1.2);
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
         }
 
         .step-content h4 {
@@ -873,7 +921,7 @@
         }
 
         .step-content a:hover {
-            color: var(--secondary);
+            color: var(--light);
             text-decoration: underline;
         }
 
@@ -883,11 +931,11 @@
         }
 
         .admin-panel {
-            background: rgba(30, 33, 36, 0.95);
+            background: rgba(10, 10, 10, 0.95);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(88, 101, 242, 0.3);
+            border: 1px solid rgba(255, 0, 0, 0.3);
             backdrop-filter: blur(15px);
             position: relative;
             overflow: hidden;
@@ -941,7 +989,7 @@
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(88, 101, 242, 0.3);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
         }
 
         textarea {
@@ -1039,10 +1087,10 @@
 
         @keyframes glow {
             0%, 100% {
-                text-shadow: 0 0 10px rgba(88, 101, 242, 0.5);
+                text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
             }
             50% {
-                text-shadow: 0 0 20px rgba(88, 101, 242, 0.8);
+                text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             }
         }
 
@@ -1260,7 +1308,7 @@
                 <h1 class="glow-text">Glimz</h1>
                 <p class="server-description">سيرفر الألعاب الأكثر تميزاً وتفاعلاً في عالم Discord، حيث تجتمع المتعة والتنافس في مكان واحد</p>
                 <div class="member-counter">
-                    <span id="member-count">250+</span> عضو
+                    <span id="member-count">300+</span> عضو
                 </div>
                 <a href="https://discord.gg/CeBHSTEKGd" class="join-button animate__animated animate__pulse animate__infinite animate__slower">انضم إلينا</a>
             </div>
@@ -1335,38 +1383,28 @@
                     <div class="team-grid">
                         <div class="team-card">
                             <img src="https://cdn.discordapp.com/avatars/770924649239674891/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="كرمو أونر شيب">
-                            <h4>كرمو أونر شيب</h4>
+                            <h4>كرمو (مالك السيرفر)</h4>
                             <p>ID: 770924649239674891</p>
                         </div>
                         <div class="team-card">
                             <img src="https://cdn.discordapp.com/avatars/1373355566344179782/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="المؤسس جيفري">
-                            <h4>المؤسس جيفري</h4>
+                            <h4>جيفري (المؤسس)</h4>
                             <p>ID: 1373355566344179782</p>
                         </div>
                         <div class="team-card">
                             <img src="https://cdn.discordapp.com/avatars/1332179659185590303/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="جعفر مساعد">
-                            <h4>جعفر مساعد أونر شيب</h4>
+                            <h4>جعفر (مساعد المؤسس)</h4>
                             <p>ID: 1332179659185590303</p>
                         </div>
                         <div class="team-card">
-                            <img src="https://cdn.discordapp.com/avatars/1302985156373647554/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="جودي">
-                            <h4>جودي مسؤولة نشر</h4>
-                            <p>ID: 1302985156373647554</p>
-                        </div>
-                        <div class="team-card">
-                            <img src="https://cdn.discordapp.com/avatars/1391181393232658452/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="محمد">
-                            <h4>محمد مسؤول تنظيم</h4>
-                            <p>ID: 1391181393232658452</p>
-                        </div>
-                        <div class="team-card">
                             <img src="https://cdn.discordapp.com/avatars/1085901046842400818/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="زانا">
-                            <h4>زانا ممول السيرفر</h4>
+                            <h4>زانا (مسؤول إدارة الأعضاء)</h4>
                             <p>ID: 1085901046842400818</p>
                         </div>
                         <div class="team-card">
-                            <img src="https://cdn.discordapp.com/avatars/881223748353679411/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="عزيز">
-                            <h4>عزيز مساعد مسؤول</h4>
-                            <p>ID: 881223748353679411</p>
+                            <img src="https://cdn.discordapp.com/avatars/1391181393232658452/a_d85f5e5b6a3c0b5e5b6a3c0b5e5b6a3c.webp?size=1024" alt="محمد">
+                            <h4>محمد (مسؤول نشر وفعاليات)</h4>
+                            <p>ID: 1391181393232658452</p>
                         </div>
                     </div>
                 </div>
@@ -1408,21 +1446,21 @@
                 <h3 class="animate__animated animate__fadeIn">لقطات من السيرفر</h3>
                 <div class="screenshots animate__animated animate__fadeInUp">
                     <div class="screenshot-container">
-                        <img src="https://via.placeholder.com/800x450/7289DA/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
+                        <img src="https://via.placeholder.com/800x450/FF0000/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
                         <div class="screenshot-overlay">
                             <h4>قناة الترحيب</h4>
                             <p>ترحيب بالأعضاء الجدد</p>
                         </div>
                     </div>
                     <div class="screenshot-container">
-                        <img src="https://via.placeholder.com/800x450/EB459E/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
+                        <img src="https://via.placeholder.com/800x450/000000/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
                         <div class="screenshot-overlay">
                             <h4>قناة الألعاب</h4>
                             <p>مناقشة الألعاب المختلفة</p>
                         </div>
                     </div>
                     <div class="screenshot-container">
-                        <img src="https://via.placeholder.com/800x450/23272A/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
+                        <img src="https://via.placeholder.com/800x450/121212/FFFFFF?text=لقطة+من+السيرفر" alt="لقطة سيرفر">
                         <div class="screenshot-overlay">
                             <h4>قناة الفعاليات</h4>
                             <p>فعاليات السيرفر الأسبوعية</p>
@@ -1791,7 +1829,7 @@
                     }
                 },
                 "color": {
-                    "value": "#5865F2"
+                    "value": "#FF0000"
                 },
                 "shape": {
                     "type": "circle",
@@ -1826,7 +1864,7 @@
                 "line_linked": {
                     "enable": true,
                     "distance": 150,
-                    "color": "#5865F2",
+                    "color": "#FF0000",
                     "opacity": 0.4,
                     "width": 1
                 },
@@ -2004,7 +2042,7 @@
             adminBtn.style.alignItems = 'center';
             adminBtn.style.justifyContent = 'center';
             adminBtn.style.fontSize = '1.5rem';
-            adminBtn.style.boxShadow = '0 5px 20px rgba(88, 101, 242, 0.5)';
+            adminBtn.style.boxShadow = '0 5px 20px rgba(255, 0, 0, 0.5)';
             adminBtn.style.border = 'none';
             adminBtn.style.cursor = 'pointer';
             adminBtn.style.transition = 'all 0.3s ease';
